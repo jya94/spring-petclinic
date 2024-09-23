@@ -32,7 +32,7 @@ jobs:
 
       - name: Push Docker Image
         run: |
-          docker push jya94/spring-petclinic:latest
+          sudo docker push jya94/spring-petclinic:latest
 
   # deploy:
   #   runs-on: ubuntu-latest
