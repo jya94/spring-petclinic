@@ -1,9 +1,10 @@
 name: CI/CD Pipeline
 
 on:
-  push:
-    branches:
-      - main  # or the branch you want to use
+  workflow_dispatch:
+  # push:
+  #   branches:
+  #     - main  # or the branch you want to use
   pull_request:
     branches:
       - main
