@@ -34,23 +34,23 @@ jobs:
         run: |
           sudo docker push jya94/spring-petclinic:latest
 
-  # deploy:
-  #   runs-on: ubuntu-latest
-  #   needs: build
-  #   steps:
-  #     - name: Checkout Code
-  #       uses: actions/checkout@v2
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
 
-  #     - name: Set up kubectl
-  #       uses: azure/setup-kubectl@v1
-  #       with:
-  #         version: 'latest'
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v1
+        with:
+          version: 'latest'
 
-  #     - name: Configure kubectl
-  #       run: |
-  #         echo "${{ secrets.KUBE_CONFIG }}" | base64 --decode > $HOME/.kube/config
+      - name: Configure kubectl
+        run: |
+          echo "${{ secrets.KUBE_CONFIG }}" | base64 --decode > $HOME/.kube/config
 
-  #     - name: Deploy to Kubernetes
-  #       run: |
-  #         kubectl set image deployment/spring-petclinic spring-petclinic=your-dockerhub-username/spring-petclinic:latest
-  #         kubectl rollout status deployment/spring-petclinic
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl set image deployment/spring-petclinic spring-petclinic=your-dockerhub-username/spring-petclinic:latest
+          kubectl rollout status deployment/spring-petclinic
