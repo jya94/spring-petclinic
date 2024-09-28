@@ -32,7 +32,7 @@ jobs:
 
       - name: Push Docker Image
         run: |
-          sudo docker push jya94/spring-petclinic:latest
+          docker push jya94/spring-petclinic:latest
 
   deploy:
     runs-on: ubuntu-latest
@@ -52,5 +52,5 @@ jobs:
 
       - name: Deploy to Kubernetes
         run: |
-          kubectl set image deployment/spring-petclinic spring-petclinic=your-dockerhub-username/spring-petclinic:latest
+          kubectl set image deployment/spring-petclinic spring-petclinic=jya94/spring-petclinic:latest
           kubectl rollout status deployment/spring-petclinic
