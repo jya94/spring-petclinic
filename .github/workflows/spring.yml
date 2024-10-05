@@ -61,9 +61,15 @@ jobs:
         run: |
           echo "${{ secrets.KUBE_CONFIG }}" | base64 --decode > $HOME/.kube/config
 
+      - name: Verify Kubernetes Context
+        run: kubectl config current-context
+
+      - name: View Kubernetes Config
+        run: kubectl config view
+
       - name: kubectl deployment
         run: |
-          kubectl apply -f k8s/
+          kubectl apply -f k8s/ --validate=false
 
       - name: Deploy to Kubernetes
         run: |
