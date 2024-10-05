@@ -2,16 +2,13 @@ name: CI/CD Pipeline
 
 on:
   workflow_dispatch:
-  # push:
-  #   branches:
-  #     - main  # or the branch you want to use
   pull_request:
     branches:
       - main
 
 jobs:
   build:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest  # Change to use GitHub's cloud runners
 
     steps:
       - name: Checkout Code
@@ -20,9 +17,14 @@ jobs:
       - name: Build with Maven
         run: mvn clean package
 
+      - name: Get Version
+        id: get_version
+        run: |
+          echo "VERSION=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV  # Fix variable name from GTIHUB_ENV to GITHUB_ENV
+
       - name: Build Docker Image
         run: |
-          sudo docker build . -t jya94/spring-petclinic:latest
+          sudo docker build . -t jya94/spring-petclinic:${{ env.VERSION }}
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
@@ -32,7 +34,7 @@ jobs:
 
       - name: Push Docker Image
         run: |
-          docker push jya94/spring-petclinic:latest
+          docker push jya94/spring-petclinic:${{ env.VERSION }}
 
   deploy:
     runs-on: ubuntu-latest
@@ -50,7 +52,11 @@ jobs:
         run: |
           echo "${{ secrets.KUBE_CONFIG }}" | base64 --decode > $HOME/.kube/config
 
+      - name: kubectl deployment
+        run: |
+          kubectl apply -f k8s/
+
       - name: Deploy to Kubernetes
         run: |
-          kubectl set image deployment/spring-petclinic spring-petclinic=jya94/spring-petclinic:latest
+          kubectl set image deployment/spring-petclinic spring-petclinic=jya94/spring-petclinic:${{ env.VERSION }}
           kubectl rollout status deployment/spring-petclinic
